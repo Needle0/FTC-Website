@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Hoco Robo - FTC Team 31161</title>
+<style>
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+  --bg: #0a0a0a;
+  --card: rgba(30,30,30,0.88);
+  --accent1: #00bfff;
+  --accent2: #007acc;
+  --muted: #a0a0a0;
+}
+
+/* Base */
+html,body{height:100%;margin:0;padding:0;font-family:'Exo',sans-serif;background:var(--bg);color:#e0e0e0;overflow-x:hidden}
+body{
+  background-image:url('https://wallpapers.com/images/high/4k-futuristic-city-3840-x-2160-4b0z0z0z0z0z0z.jpg');
+  background-size:cover;background-attachment:fixed;background-position:center;scrollbar-width:thin;scrollbar-color:var(--accent2) var(--bg);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:12px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background-color:var(--accent2);border-radius:20px;border:3px solid var(--bg)}
+
+/* Ensure images blend into background (remove white borders/backgrounds) */
+img{
+  display:block;
+  border:none;
+  outline:none;
+  padding:0;
+  margin:0 auto;
+  background:transparent !important;
+  box-shadow:none !important;
+  max-width:100%;
+  height:auto;
+  border-radius:0;
+  image-rendering: auto;
+}
+
+/* Header / nav */
+header{background:linear-gradient(90deg,var(--accent1),var(--accent2));padding:28px 20px;text-align:center;box-shadow:0 0 15px rgba(0,191,255,0.45)}
+header h1{margin:0;font-size:clamp(1.6rem,3vw,2.6rem);text-shadow:0 0 10px var(--accent1)}
+
+nav{background:rgba(10,10,10,0.9);padding:10px 0;text-align:center;position:sticky;top:0;z-index:40;box-shadow:0 4px 8px rgba(0,191,255,0.06)}
+nav a{color:#ccf2ff;text-decoration:none;margin:0 16px;font-size:1.02rem;font-weight:500;transition:all .18s}
+nav a:hover{color:var(--accent1);transform:scale(1.03)}
+nav a.active{color:var(--accent1);font-weight:700;text-shadow:0 0 6px var(--accent1)}
+
+/* Main & footer */
+main{max-width:1200px;margin:28px auto;padding:28px;background:var(--card);border-radius:12px;box-shadow:0 0 18px rgba(0,191,255,0.12);transition:opacity .18s}
+footer{text-align:center;padding:8px;background:rgba(10,10,10,0.9);color:var(--muted);position:fixed;width:100%;bottom:0;border-top:1px solid var(--accent2);z-index:40}
+h2{color:var(--accent1);text-shadow:0 0 8px var(--accent1);margin-top:0}
+h3{color:#dff7ff;margin:8px 0}
+
+/* Calendar & events */
+.whats-happening{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+.calendar-container{flex:1 1 60%;min-width:280px}
+.events-container{flex:1 1 32%;min-width:260px;background:rgba(10,10,10,0.6);padding:14px;border-radius:10px}
+.calendar{background:rgba(30,30,30,0.96);padding:16px;border-radius:12px;color:#e0e0e0;box-shadow:0 0 12px rgba(0,191,255,0.08);transition:opacity .15s}
+.calendar header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.nav-arrow{background:transparent;color:#ccf2ff;font-size:20px;padding:6px 10px;border:1px solid var(--accent2);border-radius:6px;text-decoration:none}
+.nav-arrow:hover{background:var(--accent2);color:#fff}
+
+.days,.dates{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.days span{text-align:center;padding:8px;color:#a0a0a0;font-weight:600}
+.dates span{text-align:center;padding:12px;background:rgba(42,42,42,0.9);border-radius:8px;cursor:pointer;transition:all .15s ease;font-weight:600}
+.dates span.empty{background:transparent;cursor:default}
+.dates span:hover{transform:translateY(-4px);box-shadow:0 6px 14px rgba(0,191,255,0.06)}
+.dates span.event{background:linear-gradient(180deg,var(--accent1),var(--accent2));color:#04121a;box-shadow:0 0 8px var(--accent1)}
+.dates span.current{border:2px solid var(--accent1);box-shadow:0 0 10px var(--accent1);color:#fff;font-weight:700}
+
+/* Hero (about) */
+.hero-image{width:100%;max-height:360px;object-fit:cover;border-radius:12px;margin-bottom:16px;box-shadow:0 0 12px rgba(0,191,255,0.06);background:transparent}
+
+/* Sponsors grid */
+.sponsors-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:12px;align-items:start}
+.sponsor-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:14px;border-radius:12px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;transition:transform .16s,box-shadow .16s;min-height:160px}
+.sponsor-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,191,255,0.06)}
+.sponsor-logo{width:100%;display:flex;align-items:center;justify-content:center;padding:6px;background:transparent}
+.sponsor-logo img{max-width:220px;height:auto;display:block;background:transparent}
+.sponsor-name{font-weight:700;color:#eaffff;margin:0;text-align:center;font-size:1.02rem}
+.sponsor-desc{margin:0;color:#bcdff7;font-size:.94rem;text-align:center}
+.badge{font-size:.8rem;padding:6px 10px;border-radius:999px;background:rgba(0,191,255,0.12);color:#bde8ff}
+
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:80}
+.modal{background:#081018;padding:18px;border-radius:10px;max-width:520px;width:94%;box-shadow:0 10px 40px rgba(0,0,0,0.7);color:#e8f7ff}
+.input-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.input-row input[type="text"],.input-row input[type="date"],.input-row textarea{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#e8f7ff}
+textarea{min-height:80px;resize:vertical;padding:8px}
+.btn{display:inline-block;padding:8px 12px;border-radius:8px;background:var(--accent2);color:#fff;border:none;cursor:pointer;margin-right:8px}
+.btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.08)}
+.small{font-size:.9rem;padding:6px 10px;border-radius:6px}
+.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.note{font-size:.9rem;color:#a7d9ff;margin-top:8px}
+
+/* Responsive */
+@media(max-width:820px){
+  main{margin:14px;padding:18px}
+  nav a{display:inline-block;margin:8px}
+  .whats-happening{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Hoco Robo - FTC Team 31161</h1>
+</header>
+
+<nav aria-label="Main navigation">
+  <a href="/" data-path="/" class="nav-link">Home</a>
+  <a href="/whats-happening" data-path="/whats-happening" class="nav-link">What's Happening</a>
+  <a href="/about-us" data-path="/about-us" class="nav-link">About Us</a>
+  <a href="/sponsors" data-path="/sponsors" class="nav-link">Sponsors</a>
+  <a href="/resources" data-path="/resources" class="nav-link">Resources</a>
+</nav>
+
+<main id="main-content" aria-live="polite"></main>
+
+<footer>
+  <p style="margin:0">&copy; 2025 Hoco Robo. All rights reserved. Website: 31161.org (simulated locally)</p>
+</footer>
+
+<!-- Modal for add/edit event -->
+<div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" role="document" aria-labelledby="modal-title">
+    <h3 id="modal-title">Add / Edit Event</h3>
+    <form id="event-form">
+      <div class="input-row">
+        <label style="width:100%"><small>Date</small><input id="evt-date" type="date" required></label>
+      </div>
+      <div class="input-row">
+        <label style="width:100%"><small>Title</small><input id="evt-title" type="text" placeholder="Event title" required></label>
+      </div>
+      <div class="input-row">
+        <label style="width:100%"><small>Description (HTML allowed)</small><textarea id="evt-desc" placeholder="Event details, location, time..."></textarea></label>
+      </div>
+      <div class="actions">
+        <button type="button" id="delete-event" class="btn secondary small" style="display:none">Delete</button>
+        <button type="button" id="cancel-modal" class="btn secondary small">Cancel</button>
+        <button type="submit" class="btn small">Save Event</button>
+      </div>
+      <div class="note">Events are stored locally on your browser (localStorage). Export/Import available.</div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* Configuration and helpers */
+const NOW = { year: 2025, month: 10, day: 7 };
+const MIN_YEAR = 2025, MIN_MONTH = 1, MAX_YEAR = 2028, MAX_MONTH = 12;
+const STORAGE_KEY = 'hr_events_v1';
+const SEED_EVENTS = {
+  '2026-1-10': { title: 'Moorefield Regional', desc: 'January 10, 2026, 7:00 AM – 5:00 PM<br>Moorefield High School, 401 N Main St, Moorefield, WV 26836, USA' },
+  '2026-1-25': { title: 'Francis Scott Key Regional', desc: 'January 25, 2026, 7:00 AM – 5:00 PM<br>Francis Scott Key High School, 3825 Bark Hill Rd, Union Bridge, MD 21791, USA' }
+};
+
+function loadEvents(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) { localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_EVENTS)); return JSON.parse(JSON.stringify(SEED_EVENTS)); }
+    return JSON.parse(raw);
+  } catch(e) { console.error(e); return {}; }
+}
+function saveEvents(m){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(m)); } catch(e){ console.error(e); } }
+
+function clampToRange(year, month){
+  while (month > 12) { month -= 12; year++; }
+  while (month < 1) { month += 12; year--; }
+  const cur = new Date(year, month - 1, 1);
+  const min = new Date(MIN_YEAR, MIN_MONTH - 1, 1);
+  const max = new Date(MAX_YEAR, MAX_MONTH - 1, 1);
+  if (cur < min) return { year: MIN_YEAR, month: MIN_MONTH };
+  if (cur > max) return { year: MAX_YEAR, month: MAX_MONTH };
+  return { year, month };
+}
+function dateKey(y,m,d){ return `${y}-${m}-${d}`; }
+
+/* Calendar generation */
+function generateCalendarHtml(year, month, eventsMap){
+  const monthName = new Date(year, month - 1, 1).toLocaleString('default', { month: 'long' }) + ' ' + year;
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  let datesHtml = '';
+  let day = 1;
+  for (let week=0; week<6; week++){
+    for (let wd=0; wd<7; wd++){
+      if ((week===0 && wd < firstDay) || day > daysInMonth) { datesHtml += '<span class="empty"></span>'; }
+      else {
+        const key = dateKey(year, month, day);
+        const classes = [];
+        if (eventsMap[key]) classes.push('event');
+        if (year === NOW.year && month === NOW.month && day === NOW.day) classes.push('current');
+        datesHtml += `<span class="${classes.join(' ')}" data-day="${day}" data-month="${month}" data-year="${year}">${day}</span>`;
+        day++;
+      }
+    }
+    if (day > daysInMonth) break;
+  }
+
+  let prevMonth = month - 1, prevYear = year;
+  if (prevMonth === 0) { prevMonth = 12; prevYear--; }
+  let nextMonth = month + 1, nextYear = year;
+  if (nextMonth === 13) { nextMonth = 1; nextYear++; }
+  const showPrev = (prevYear > MIN_YEAR) || (prevYear === MIN_YEAR && prevMonth >= MIN_MONTH);
+  const showNext = (nextYear < MAX_YEAR) || (nextYear === MAX_YEAR && nextMonth <= MAX_MONTH);
+  const prevBtn = showPrev ? `<a href="/whats-happening?year=${prevYear}&month=${prevMonth}" class="nav-arrow" data-year="${prevYear}" data-month="${prevMonth}">&#9664;</a>` : '<span></span>';
+  const nextBtn = showNext ? `<a href="/whats-happening?year=${nextYear}&month=${nextMonth}" class="nav-arrow" data-year="${nextYear}" data-month="${nextMonth}">&#9654;</a>` : '<span></span>';
+
+  return `
+    <header>${prevBtn}<h2>${monthName}</h2>${nextBtn}</header>
+    <div class="days"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+    <div class="dates">${datesHtml}</div>
+  `;
+}
+
+/* Page generators (use static/ image paths) */
+function homeContent(){
+  return `<h2>Welcome to Hoco Robo</h2>
+    <p>We are FTC Team 31161, dedicated to innovation in robotics. Explore our site to learn more about our journey and achievements in a futuristic world of technology.</p>`;
+}
+
+function aboutContent(){
+  return `<h2>About Us</h2>
+    <img src="static/kids.jpg" alt="FTC Team" class="hero-image">
+    <p>We are FTC Team 31161 Hoco Robo, a dedicated group of students passionate about robotics, engineering, and teamwork. Guided by the values of FIRST, we strive to innovate, collaborate, and inspire our community through STEM.</p>
+    <h3>Contact Us</h3>
+    <p>Email: <a href="mailto:Hocorobo31161@gmail.com">Hocorobo31161@gmail.com</a></p>`;
+}
+
+function sponsorsContent(){
+  return `<h2>Sponsors</h2>
+    <p>We gratefully acknowledge our sponsors for their invaluable support:</p>
+    <div class="sponsors-grid">
+      <div class="sponsor-card">
+        <div class="sponsor-logo"><img src="static/AdobeExpress-file.png" alt="Guanyi Fencing Academy Logo"></div>
+        <p class="sponsor-name">Guanyi Fencing Academy</p>
+        <p class="sponsor-desc">Supporting our team with discipline and precision.</p>
+        <div class="sponsor-meta"><span class="badge">Local Partner</span></div>
+      </div>
+
+      <div class="sponsor-card">
+        <div class="sponsor-logo"><img src="static/AdobeExpress-file1.png" alt="AiRy Consulting Logo"></div>
+        <p class="sponsor-name">AiRy Consulting LLC</p>
+        <p class="sponsor-desc">Cloud & systems consulting — mentoring our coding and backend knowledge.</p>
+        <div class="sponsor-meta"><span class="badge">Tech Sponsor</span></div>
+      </div>
+
+      <div class="sponsor-card">
+        <div style="padding:8px;text-align:center;color:#cfeaff">
+          <p style="margin:0;font-weight:700">Local Community Fund</p>
+          <p style="margin:6px 0 0;color:#bcdff7">Equipment donations &amp; outreach support</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+function resourcesContent(){
+  return `<h2>Resources</h2>
+    <p>Useful links and documents for robotics enthusiasts:</p>
+    <ul>
+      <li><a href="https://www.firstinspires.org/robotics/ftc" target="_blank" rel="noopener noreferrer">FTC Official Website</a></li>
+      <li>Team Handbook (PDF download placeholder)</li>
+      <li>Robotics Tutorials</li>
+    </ul>`;
+}
+
+function whatsHappeningContent(queryYear, queryMonth){
+  let y = queryYear || NOW.year, m = queryMonth || NOW.month;
+  ({ year: y, month: m } = clampToRange(y, m));
+  const eventsMap = loadEvents();
+  const calHtml = generateCalendarHtml(y, m, eventsMap);
+
+  const nowDate = new Date(NOW.year, NOW.month - 1, NOW.day);
+  const upcoming = [];
+  for (const k in eventsMap) {
+    const parts = k.split('-').map(s => parseInt(s, 10));
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    if (d >= nowDate) upcoming.push({ d, key: k, ev: eventsMap[k] });
+  }
+  upcoming.sort((a,b)=>a.d-b.d);
+
+  let eventsHtml = '';
+  if (upcoming.length === 0) eventsHtml = '<p>No upcoming events.</p>';
+  else {
+    eventsHtml = '<ul>';
+    for (const it of upcoming) eventsHtml += `<li class="event-item" data-key="${it.key}" data-year="${it.d.getFullYear()}" data-month="${it.d.getMonth()+1}" data-day="${it.d.getDate()}">${it.ev.desc}</li>`;
+    eventsHtml += '</ul>';
+  }
+
+  return `<h2>What's Happening</h2>
+    <div class="whats-happening">
+      <div class="calendar-container">
+        <p>Calendar (Current date: ${new Date(NOW.year, NOW.month - 1, NOW.day).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})})</p>
+        <div class="calendar" id="calendar">${calHtml}</div>
+      </div>
+      <div class="events-container" id="events-side">
+        <h3>Upcoming Event Details</h3>
+        ${eventsHtml}
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="add-event-btn" class="btn small">Add Event</button>
+          <button id="export-csv-btn" class="btn small secondary">Export CSV</button>
+          <label class="btn small secondary" style="display:inline-block;cursor:pointer">
+            Import CSV <input id="import-csv-input" type="file" accept=".csv" style="display:none">
+          </label>
+        </div>
+        <div id="event-detail" style="margin-top:12px;color:#e6f9ff"></div>
+      </div>
+    </div>`;
+}
+
+/* Router & render */
+function getPath(){ return window.location.pathname || '/'; }
+function getQueryParams(){ return new URLSearchParams(window.location.search); }
+
+function renderRoute(){
+  const path = getPath();
+  const main = document.getElementById('main-content');
+  if (!main) return;
+
+  const params = getQueryParams();
+  const qYear = params.get('year') ? parseInt(params.get('year'),10) : null;
+  const qMonth = params.get('month') ? parseInt(params.get('month'),10) : null;
+
+  main.style.opacity = 0;
+  setTimeout(()=> {
+    const validPaths = ['/', '/whats-happening', '/about-us', '/sponsors', '/resources'];
+    const route = validPaths.includes(path) ? path : '/'; // unknown -> home
+    let content = '';
+    if (route === '/' || route === '') {
+      content = homeContent();
+      document.title = 'Hoco Robo - Home';
+      if (path !== '/') history.replaceState(history.state, '', '/');
+    } else if (route === '/whats-happening') {
+      content = whatsHappeningContent(qYear, qMonth);
+      document.title = "Hoco Robo - What's Happening";
+    } else if (route === '/about-us') {
+      content = aboutContent();
+      document.title = 'Hoco Robo - About Us';
+    } else if (route === '/sponsors') {
+      content = sponsorsContent();
+      document.title = 'Hoco Robo - Sponsors';
+    } else if (route === '/resources') {
+      content = resourcesContent();
+      document.title = 'Hoco Robo - Resources';
+    }
+    main.innerHTML = content;
+    main.style.opacity = 1;
+
+    // update nav active
+    document.querySelectorAll('nav a.nav-link').forEach(link => {
+      link.classList.remove('active');
+      const linkPath = link.getAttribute('data-path');
+      if ((linkPath === '/' && route === '/') || linkPath === route) link.classList.add('active');
+    });
+
+    attachCommonHandlers();
+    if (route === '/whats-happening') attachWhatsHandlers();
+  }, 100);
+}
+
+function attachCommonHandlers(){
+  document.querySelectorAll('nav a.nav-link').forEach(link => {
+    if (link.dataset.bound) return;
+    link.dataset.bound = '1';
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const url = link.getAttribute('data-path') || '/';
+      history.pushState({}, '', url);
+      renderRoute();
+    });
+  });
+}
+
+/* Calendar / events wiring */
+const modalBackdrop = document.getElementById('modal-backdrop');
+const evtForm = document.getElementById('event-form');
+const inputDate = document.getElementById('evt-date');
+const inputTitle = document.getElementById('evt-title');
+const inputDesc = document.getElementById('evt-desc');
+const deleteBtn = document.getElementById('delete-event');
+const cancelBtn = document.getElementById('cancel-modal');
+
+let modalState = { mode: null, key: null };
+
+function attachWhatsHandlers(){
+  const eventsMap = loadEvents();
+  const calendarEl = document.getElementById('calendar');
+  if (!calendarEl) return;
+
+  // prev/next arrows
+  calendarEl.querySelectorAll('.nav-arrow').forEach(btn => {
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const y = parseInt(btn.dataset.year,10);
+      const m = parseInt(btn.dataset.month,10);
+      const { year, month } = clampToRange(y, m);
+      history.pushState({}, '', `/whats-happening?year=${year}&month=${month}`);
+      renderRoute();
+    });
+  });
+
+  // date cells
+  calendarEl.querySelectorAll('.dates span').forEach(span => {
+    if (span.classList.contains('empty')) return;
+    if (span.dataset.bound) return;
+    span.dataset.bound = '1';
+    span.addEventListener('click', () => {
+      const d = parseInt(span.dataset.day,10), m = parseInt(span.dataset.month,10), y = parseInt(span.dataset.year,10);
+      if (!d || !m || !y) return;
+      const key = dateKey(y,m,d);
+      showEventDetailForKey(key,y,m,d);
+    });
+  });
+
+  // sidebar event items
+  document.querySelectorAll('.event-item').forEach(li => {
+    if (li.dataset.bound) return;
+    li.dataset.bound = '1';
+    li.addEventListener('click', () => {
+      const y = parseInt(li.dataset.year,10), m = parseInt(li.dataset.month,10);
+      const { year, month } = clampToRange(y,m);
+      history.pushState({},'',`/whats-happening?year=${year}&month=${month}`);
+      renderRoute();
+      setTimeout(()=> {
+        const nowMap = loadEvents();
+        for (const k in nowMap) {
+          const parts = k.split('-').map(s=>parseInt(s,10));
+          if (parts[0]===year && parts[1]===month){ showEventDetailForKey(k, parts[0], parts[1], parts[2]); break; }
+        }
+      }, 240);
+    });
+  });
+
+  // add event
+  const addBtn = document.getElementById('add-event-btn');
+  if (addBtn && !addBtn.dataset.bound) {
+    addBtn.dataset.bound = '1';
+    addBtn.addEventListener('click', () => {
+      const params = getQueryParams();
+      const y = params.get('year') ? parseInt(params.get('year'),10) : NOW.year;
+      const m = params.get('month') ? parseInt(params.get('month'),10) : NOW.month;
+      openModal({ mode:'create', date: `${String(y).padStart(4,'0')}-${String(m).padStart(2,'0')}-01` });
+    });
+  }
+
+  // export CSV
+  const exportBtn = document.getElementById('export-csv-btn');
+  if (exportBtn && !exportBtn.dataset.bound) {
+    exportBtn.dataset.bound = '1';
+    exportBtn.addEventListener('click', exportEventsCSV);
+  }
+
+  // import CSV
+  const importInput = document.getElementById('import-csv-input');
+  if (importInput && !importInput.dataset.bound) {
+    importInput.dataset.bound = '1';
+    importInput.addEventListener('change', (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      importEventsCSVFile(file);
+      importInput.value = '';
+    });
+  }
+}
+
+function showEventDetailForKey(key,y,m,d){
+  const eventsMap = loadEvents();
+  const detailBox = document.getElementById('event-detail');
+  if (!detailBox) return;
+  if (eventsMap[key]) {
+    const ev = eventsMap[key];
+    detailBox.innerHTML = `<strong>${escapeHtml(ev.title)}</strong><div style="font-size:.95rem">${ev.desc}</div>
+      <div style="margin-top:8px"><button id="edit-event-btn" class="btn small">Edit</button> <button id="add-another-btn" class="btn secondary small">Add New</button></div>`;
+    const editBtn = document.getElementById('edit-event-btn');
+    const addBtn = document.getElementById('add-another-btn');
+    if (editBtn) editBtn.addEventListener('click', ()=> openModal({mode:'edit', key}));
+    if (addBtn) addBtn.addEventListener('click', ()=> openModal({mode:'create', date:`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`}));
+  } else {
+    detailBox.innerHTML = `<em>No event for ${m}/${d}/${y}</em><div style="margin-top:8px"><button id="add-this-day" class="btn small">Add Event on this day</button></div>`;
+    const btn = document.getElementById('add-this-day');
+    if (btn) btn.addEventListener('click', ()=> openModal({mode:'create', date:`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`}));
+  }
+}
+
+/* Modal functions */
+function openModal({ mode='create', key=null, date=null } = {}){
+  modalState.mode = mode; modalState.key = key;
+  modalBackdrop.style.display = 'flex'; modalBackdrop.setAttribute('aria-hidden','false');
+  deleteBtn.style.display = (mode === 'edit') ? 'inline-block' : 'none';
+  if (mode === 'create'){
+    inputTitle.value = '';
+    inputDesc.value = '';
+    inputDate.value = date || `${NOW.year}-${String(NOW.month).padStart(2,'0')}-${String(NOW.day).padStart(2,'0')}`;
+  } else if (mode === 'edit' && key){
+    const eventsMap = loadEvents();
+    const ev = eventsMap[key];
+    if (!ev){ alert('Event not found'); closeModal(); return; }
+    const parts = key.split('-').map(s=>String(s).padStart(2,'0'));
+    inputDate.value = `${parts[0]}-${parts[1]}-${parts[2]}`;
+    inputTitle.value = ev.title || '';
+    inputDesc.value = ev.desc || '';
+  }
+  inputTitle.focus();
+}
+function closeModal(){ modalBackdrop.style.display = 'none'; modalBackdrop.setAttribute('aria-hidden','true'); modalState = {mode:null,key:null}; }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m])); }
+
+/* Form handling */
+evtForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  const dateVal = inputDate.value;
+  if (!dateVal) return alert('Please choose a date');
+  const [Y,MM,DD] = dateVal.split('-').map(s=>parseInt(s,10));
+  const title = inputTitle.value.trim() || 'Untitled Event';
+  const desc = inputDesc.value.trim() || '';
+  const key = dateKey(Y,MM,DD);
+  const eventsMap = loadEvents();
+  eventsMap[key] = { title, desc };
+  saveEvents(eventsMap);
+  closeModal();
+  history.pushState({},'',`/whats-happening?year=${Y}&month=${MM}`);
+  renderRoute();
+  setTimeout(()=> showEventDetailForKey(key,Y,MM,DD), 260);
+});
+
+/* Delete */
+deleteBtn.addEventListener('click', ()=>{
+  if (!modalState.key) return;
+  if (!confirm('Delete this event?')) return;
+  const eventsMap = loadEvents();
+  delete eventsMap[modalState.key];
+  saveEvents(eventsMap);
+  closeModal();
+  renderRoute();
+});
+
+/* Cancel/backdrop/Esc */
+document.getElementById('cancel-modal').addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', (e)=> { if (e.target === modalBackdrop) closeModal(); });
+document.addEventListener('keydown', (e)=> { if (e.key === 'Escape' && modalBackdrop.style.display === 'flex') closeModal(); });
+
+/* CSV export/import */
+function exportEventsCSV(){
+  const map = loadEvents();
+  const rows = [['date','title','description']];
+  for (const k in map){
+    const ev = map[k];
+    const date = k;
+    const title = `"${String(ev.title||'').replace(/"/g,'""')}"`;
+    const desc = `"${String(ev.desc||'').replace(/"/g,'""')}"`;
+    rows.push([date, title, desc]);
+  }
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'events.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function importEventsCSVFile(file){
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const text = e.target.result;
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      if (lines.length === 0) { alert('CSV appears empty'); return; }
+      const header = CSVSplit(lines[0]);
+      const idxDate = header.indexOf('date') !== -1 ? header.indexOf('date') : 0;
+      const idxTitle = header.indexOf('title') !== -1 ? header.indexOf('title') : 1;
+      const idxDesc = header.indexOf('description') !== -1 ? header.indexOf('description') : 2;
+      const eventsMap = loadEvents();
+      for (let i=1;i<lines.length;i++){
+        const parts = CSVSplit(lines[i]);
+        if (!parts.length) continue;
+        const date = parts[idxDate] ? parts[idxDate].replace(/^"|"$/g,'') : null;
+        const title = parts[idxTitle] ? parts[idxTitle].replace(/^"|"$/g,'') : '';
+        const desc = parts[idxDesc] ? parts[idxDesc].replace(/^"|"$/g,'') : '';
+        if (!date) continue;
+        eventsMap[date] = { title, desc };
+      }
+      saveEvents(eventsMap);
+      alert('Imported events (saved to localStorage).');
+      renderRoute();
+    } catch(err) {
+      console.error(err);
+      alert('Failed to parse CSV: ' + err.message);
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+function CSVSplit(line){
+  const res = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i=0;i<line.length;i++){
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i+1] === '"') { cur += '"'; i++; continue; }
+      inQuotes = !inQuotes;
+      continue;
+    }
+    if (ch === ',' && !inQuotes) { res.push(cur); cur = ''; continue; }
+    cur += ch;
+  }
+  res.push(cur);
+  return res;
+}
+
+/* Boot */
+function attachAll(){
+  document.querySelectorAll('nav a.nav-link').forEach(a=>{
+    if (a.dataset.bound) return;
+    a.dataset.bound = '1';
+    a.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const route = a.getAttribute('data-path') || '/';
+      history.pushState({},'',route);
+      renderRoute();
+    });
+  });
+
+  window.addEventListener('popstate', ()=> renderRoute());
+
+  // redirect legacy /calendar -> whats-happening
+  if (getPath() === '/calendar') {
+    const params = new URLSearchParams(window.location.search);
+    const y = params.get('year') || NOW.year;
+    const m = params.get('month') || NOW.month;
+    history.replaceState({}, '', `/whats-happening?year=${y}&month=${m}`);
+  }
+
+  renderRoute();
+}
+function getPath(){ return window.location.pathname || '/'; }
+
+document.addEventListener('DOMContentLoaded', attachAll);
+</script>
+</body>
+</html>
